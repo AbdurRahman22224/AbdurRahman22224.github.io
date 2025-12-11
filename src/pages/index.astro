@@ -1,0 +1,194 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Hero } from "../components/Hero";
+import ProjectCard from "../components/ProjectCard.astro";
+import BlogCard from "../components/BlogCard.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { resumeData } from "../data/resume";
+
+const projects: CollectionEntry<"projects">[] = await getCollection("projects");
+const sortedProjects = projects.sort((a, b) => {
+  // Sort by featured first, then by title (or add a date field)
+  return a.data.featured === b.data.featured ? 0 : a.data.featured ? -1 : 1;
+  return a.data.featured === b.data.featured ? 0 : a.data.featured ? -1 : 1;
+});
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<Layout title="Abdur Rahman - Portfolio">
+  <div id="about">
+    <Hero client:load />
+  </div>
+
+  <section id="skills" class="py-16 bg-muted/30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-foreground mb-8">Skills</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="bg-card p-6 rounded-lg border border-border">
+          <h3 class="font-semibold text-lg mb-4 text-primary">Languages</h3>
+          <div class="flex flex-wrap gap-2">
+            {
+              resumeData.skills.languages.map((skill) => (
+                <span class="px-2 py-1 bg-secondary text-secondary-foreground rounded text-sm">
+                  {skill}
+                </span>
+              ))
+            }
+          </div>
+        </div>
+        <div class="bg-card p-6 rounded-lg border border-border">
+          <h3 class="font-semibold text-lg mb-4 text-primary">Technologies</h3>
+          <div class="flex flex-wrap gap-2">
+            {
+              resumeData.skills.technologies.map((skill) => (
+                <span class="px-2 py-1 bg-secondary text-secondary-foreground rounded text-sm">
+                  {skill}
+                </span>
+              ))
+            }
+          </div>
+        </div>
+        <div class="bg-card p-6 rounded-lg border border-border">
+          <h3 class="font-semibold text-lg mb-4 text-primary">Libraries</h3>
+          <div class="flex flex-wrap gap-2">
+            {
+              resumeData.skills.libraries.map((skill) => (
+                <span class="px-2 py-1 bg-secondary text-secondary-foreground rounded text-sm">
+                  {skill}
+                </span>
+              ))
+            }
+          </div>
+        </div>
+        <div class="bg-card p-6 rounded-lg border border-border">
+          <h3 class="font-semibold text-lg mb-4 text-primary">MLOps/Tools</h3>
+          <div class="flex flex-wrap gap-2">
+            {
+              resumeData.skills.mlops.map((skill) => (
+                <span class="px-2 py-1 bg-secondary text-secondary-foreground rounded text-sm">
+                  {skill}
+                </span>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience" class="py-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-foreground mb-8">Experience</h2>
+      <div class="space-y-8">
+        {
+          resumeData.experience.map((exp) => (
+            <div class="bg-card border border-border rounded-lg p-6">
+              <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                <div>
+                  <h3 class="text-xl font-bold text-foreground">{exp.role}</h3>
+                  <p class="text-lg text-primary">{exp.company}</p>
+                </div>
+                <span class="text-muted-foreground bg-secondary px-3 py-1 rounded-full text-sm mt-2 md:mt-0 inline-block">
+                  {exp.date}
+                </span>
+              </div>
+              <ul class="list-disc list-inside space-y-2 text-muted-foreground">
+                {exp.points.map((point) => (
+                  <li>{point}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="py-16 bg-muted/30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-foreground mb-8">Featured Projects</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {
+          sortedProjects.map((project) => (
+            <ProjectCard
+              title={project.data.title}
+              description={project.data.description}
+              tags={project.data.tags}
+              link={project.data.link}
+              github={project.data.github}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section id="education" class="py-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-foreground mb-8">Education</h2>
+      <div class="space-y-8">
+        {
+          resumeData.education.map((edu) => (
+            <div class="bg-card border border-border rounded-lg p-6">
+              <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                <div>
+                  <h3 class="text-xl font-bold text-foreground">
+                    {edu.institution}
+                  </h3>
+                  <p class="text-lg text-primary">{edu.degree}</p>
+                </div>
+                <span class="text-muted-foreground bg-secondary px-3 py-1 rounded-full text-sm mt-2 md:mt-0 inline-block">
+                  {edu.date}
+                </span>
+              </div>
+              <p class="text-muted-foreground mb-2">
+                <strong>GPA:</strong> {edu.gpa}
+              </p>
+              <p class="text-muted-foreground">
+                <strong>Coursework:</strong> {edu.coursework}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section id="blog" class="py-16 bg-muted/30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-foreground mb-8">Blogs</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {
+          posts.map((post) => (
+            <BlogCard
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              url={`/blog/${post.slug}/`}
+              tags={post.data.tags}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="py-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold text-foreground mb-8">Get In Touch</h2>
+      <p class="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+        I'm always open to discussing new projects, creative ideas or
+        opportunities to be part of your visions.
+      </p>
+      <a
+        href={`mailto:${resumeData.email}`}
+        class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
+      >
+        Say Hello
+      </a>
+    </div>
+  </section>
+</Layout>

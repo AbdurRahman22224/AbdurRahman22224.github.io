@@ -1,0 +1,42 @@
+---
+const currentYear = new Date().getFullYear();
+
+import { resumeData } from "../data/resume";
+
+const socials = [
+  { name: "GitHub", href: resumeData.socials.github, icon: "github" },
+  { name: "LinkedIn", href: resumeData.socials.linkedin, icon: "linkedin" },
+  { name: "Kaggle", href: resumeData.socials.kaggle, icon: "kaggle" },
+  { name: "Email", href: `mailto:${resumeData.email}`, icon: "mail" },
+];
+---
+
+<footer class="bg-muted/30 border-t border-border mt-auto">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="flex flex-col md:flex-row justify-between items-center">
+      <div class="mb-4 md:mb-0">
+        <p class="text-sm text-muted-foreground">
+          &copy; {currentYear} Abdur Rahman. All rights reserved.
+        </p>
+      </div>
+
+      <div class="flex space-x-6">
+        {
+          socials.map((social) => (
+            <a
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted-foreground hover:text-primary transition-colors"
+              aria-label={social.name}
+            >
+              <span class="sr-only">{social.name}</span>
+              {/* Simple SVG icons or text if icons are complex to embed inline */}
+              <span class="text-sm font-medium">{social.name}</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,118 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection("blog");
+  return blogEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<Layout
+  title={`${entry.data.title} - Your Name`}
+  description={entry.data.description}
+>
+  <main class="min-h-screen bg-background">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <article class="prose prose-lg dark:prose-invert mx-auto">
+        <header class="mb-8 not-prose">
+          <div class="text-center mb-8">
+            <time class="text-sm text-muted-foreground">
+              {
+                entry.data.pubDate.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })
+              }
+            </time>
+            <h1 class="text-4xl font-bold text-foreground mt-2 mb-4">
+              {entry.data.title}
+            </h1>
+            <p class="text-xl text-muted-foreground">
+              {entry.data.description}
+            </p>
+            {
+              entry.data.tags && (
+                <div class="flex flex-wrap justify-center gap-2 mt-6">
+                  {entry.data.tags.map((tag) => (
+                    <span class="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )
+            }
+          </div>
+        </header>
+
+        <Content />
+
+        <div class="not-prose mt-12 pt-8 border-t border-border">
+          <a
+            href="/blog/"
+            class="inline-flex items-center text-primary hover:text-primary/80 transition-colors font-medium"
+          >
+            <svg
+              class="w-4 h-4 mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Back to Blog
+          </a>
+        </div>
+      </article>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .prose {
+    max-width: none;
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    color: theme("colors.gray.900");
+  }
+
+  .prose a {
+    color: theme("colors.primary.DEFAULT");
+    text-decoration: none;
+  }
+
+  .prose a:hover {
+    color: theme("colors.primary.DEFAULT");
+    text-decoration: underline;
+  }
+
+  .prose code {
+    background-color: theme("colors.gray.100");
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+  }
+
+  .prose pre {
+    background-color: theme("colors.gray.900");
+    color: theme("colors.gray.100");
+  }
+</style>
