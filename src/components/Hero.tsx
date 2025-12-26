@@ -58,14 +58,14 @@ export const Hero = () => {
                         </a>
                     </motion.div>
                 </div>
-                <div className="hidden lg:block relative">
+                <div className="block relative order-first lg:order-last mb-12 lg:mb-0">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.5 }}
                         className="relative z-10"
                     >
-                        <div className="relative w-80 h-80 mx-auto">
+                        <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 mx-auto">
                             <div className="absolute inset-0 bg-gradient-to-tr from-primary to-secondary rounded-full blur-2xl opacity-30 animate-pulse"></div>
                             <img
                                 src="/profile-pic.png"
